@@ -3,9 +3,12 @@ package com.toyproject.bookmanagement.service;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.toyproject.bookmanagement.dto.auth.JwtTokenRespDto;
+import com.toyproject.bookmanagement.dto.auth.JwtRespDto;
 import com.toyproject.bookmanagement.dto.auth.LoginReqDto;
 import com.toyproject.bookmanagement.dto.auth.SignupReqDto;
 import com.toyproject.bookmanagement.entity.Authority;
@@ -19,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationService implements UserDetailsService{
 
 	private final UserRepository userRepository;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -43,16 +46,24 @@ public class AuthenticationService {
 												.userId(userEntity.getUserId())
 												.roleId(1)
 												.build());
-		userRepository.saveAuthorities(Authority.builder()
-				.userId(userEntity.getUserId())
-				.roleId(2)
-				.build());
 	}
 	
-	public JwtTokenRespDto login(LoginReqDto loginReqDto) {
+	public JwtRespDto signin(LoginReqDto loginReqDto) {
 		UsernamePasswordAuthenticationToken authenticationToken = 
 				new UsernamePasswordAuthenticationToken(loginReqDto.getEmail(), loginReqDto.getPassword());
+		
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-		return jwtTokenProvider.createToken(authentication);
+		return jwtTokenProvider.generateToken(authentication);
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User userEntity = userRepository.findUserByEmail(username);
+		
+		if(userEntity == null) {
+			throw new CustomException("Login failed",
+					ErrorMap.builder().put("email", "등록되지 않은 이메일입니다.").build());
+		}
+		return userEntity.toPrincipal();
 	}
 }

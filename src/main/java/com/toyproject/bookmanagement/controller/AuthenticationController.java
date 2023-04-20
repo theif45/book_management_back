@@ -26,7 +26,7 @@ public class AuthenticationController {
 	@ValidAspect
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, BindingResult bindingResult) {
-		return ResponseEntity.ok(authenticationService.login(loginReqDto));
+		return ResponseEntity.ok(authenticationService.signin(loginReqDto));
 	}
 	
 	@ValidAspect

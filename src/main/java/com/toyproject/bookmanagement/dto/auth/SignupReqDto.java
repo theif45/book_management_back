@@ -1,6 +1,7 @@
 package com.toyproject.bookmanagement.dto.auth;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +14,7 @@ import lombok.Data;
 public class SignupReqDto {
 	
 	@Email
+	@NotBlank
 	private String email;
 	
 	// 최소 8글자,글자1개,숫자1개,특수문자1개

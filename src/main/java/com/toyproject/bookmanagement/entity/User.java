@@ -1,6 +1,5 @@
 package com.toyproject.bookmanagement.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.toyproject.bookmanagement.security.PrincipalUserDetails;
@@ -24,17 +23,11 @@ public class User {
 	private List<Authority> authorities;
 	
 	public PrincipalUserDetails toPrincipal() {
-		List<String> roles = new ArrayList<>();
-		
-		authorities.forEach(authority -> {
-			roles.add(authority.getRole().getRoleName());
-		});
-		
 		return PrincipalUserDetails.builder()
 				.userId(userId)
 				.email(email)
 				.password(password)
-				.roles(roles)
+				.authorities(authorities)
 				.build();
 	}
 }

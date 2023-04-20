@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.toyproject.bookmanagement.entity.Authority;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,13 +21,13 @@ public class PrincipalUserDetails implements UserDetails{
 	private String email;
 	private String password;
 	
-	private List<String> roles;
+	private List<Authority> authorities;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-		roles.forEach(role -> {
-			authorities.add(new SimpleGrantedAuthority(role));
+		this.authorities.forEach(authority -> {
+			authorities.add(new SimpleGrantedAuthority(authority.getRole().getRoleName()));
 		});
 		return authorities;
 	}
@@ -37,7 +39,7 @@ public class PrincipalUserDetails implements UserDetails{
 
 	@Override
 	public String getUsername() {
-		return null;
+		return email;
 	}
 
 	@Override
