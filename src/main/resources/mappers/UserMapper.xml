@@ -54,12 +54,9 @@
 		values(0, #{email}, #{password}, #{name}, #{provider})
 	</insert>
 	
-	<insert id="addAuthorities" parameterType="list">
+	<insert id="saveAuthorities" parameterType="com.toyproject.bookmanagement.entity.Authority">
 		insert into authority_tb
-		values
-		<foreach collection="list" item="authority" separator=",">
-			(0, #{authority.userId}, #{authority.roleId})
-		</foreach>
+		values(0, #{userId}, #{roleId})
 	</insert>
 
 </mapper>

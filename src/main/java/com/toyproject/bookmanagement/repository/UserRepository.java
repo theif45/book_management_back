@@ -11,6 +11,6 @@ import com.toyproject.bookmanagement.entity.User;
 public interface UserRepository {
 
 	public User findUserByEmail(String email);
-	public int addAuthorities(List<Authority> authorities);
 	public int saveUser(User user);
+	public int saveAuthorities(Authority authoriy);
 }
