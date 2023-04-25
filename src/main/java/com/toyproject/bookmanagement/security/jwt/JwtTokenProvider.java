@@ -1,14 +1,21 @@
 package com.toyproject.bookmanagement.security.jwt;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.toyproject.bookmanagement.dto.auth.JwtRespDto;
+import com.toyproject.bookmanagement.exception.CustomException;
 import com.toyproject.bookmanagement.security.PrincipalUserDetails;
 
 import io.jsonwebtoken.Claims;
@@ -92,4 +99,24 @@ public class JwtTokenProvider {
 				.getBody();
 	}
 
+	public Authentication getAuthentication(String accessToken) {
+		Authentication authentication = null;
+		Claims claims = getClaims(accessToken);
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+		
+		if(claims.get("auth") == null) {
+			throw new CustomException("AccessToken에 권한 정보가 없습니다.");
+		}
+		
+		String auth = claims.get("auth").toString();
+		for(String role : auth.split(",")) {
+			authorities.add(new SimpleGrantedAuthority(role));
+		}
+		
+		UserDetails userDetails = new User(claims.getSubject(), "", authorities);
+		
+		authentication = new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+		
+		return authentication;
+	}
 }
