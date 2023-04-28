@@ -102,14 +102,16 @@ public class BookService {
 		map.put("bookListId", bookListId);
 		map.put("userId", userId);
 		return bookRepository.rentalBook(map);
-		
 	}
 	
 	public int returnBook(int bookListId, int userId) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("bookListId", bookListId);
 		map.put("userId", userId);
-		return bookRepository.returnBook(map);
-		
+		return bookRepository.returnBook(map);	
+	}
+	
+	public int registeBookList(int bookId) {
+		return bookRepository.registerBookList(bookId);
 	}
 }
